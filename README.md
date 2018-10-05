@@ -2,7 +2,7 @@
 
 * [GameRules](#GameRules)
 * [Dependencies](#Dependencies)
-* [How to Play Game](#How to Play Game)
+* [How_to_Play_Game](#How to Play Game)
 
 
 ## Game Rules
