@@ -2,6 +2,7 @@
 
 * [GameRules](#GameRules)
 * [Dependencies](#Dependencies)
+* [How to Play Game](#How to Play Game)
 
 
 ## Game Rules
@@ -14,6 +15,9 @@ iv) You may restart the game if you complete it successfully.
 ## Dependencies
 No dependencies.  
 A simple web based game in vanilla javascript
+
+## How to Play Game
+Double click the index.html file and enjoy the game !
 
 
 

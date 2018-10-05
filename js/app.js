@@ -1,7 +1,9 @@
+"use strict";
 
 /* Each block crossed by enemy and player is 101 * 171 pixels */
-const horizontalStep = 101; 
-const verticalStep  = 85; // (171/2 - 0.5)
+var HORIZONTAL_STEP = 101; 
+var VERTICAL_STEP  = 85; // (171/2 - 0.5)
+var isGameWorking = true;
 
 /* Enemies our player must avoid*/
 var Enemy = function(x,y,velocity) {    
@@ -26,9 +28,11 @@ Enemy.prototype.update = function(dt) {
     */
 
     /* if the bug reaches the end of the canvas, start afresh */
-    if( this.x < horizontalStep * 5 ){
+    if( this.x < HORIZONTAL_STEP * 5 ){
         this.x += this.velocity * dt;
-     } else {this.x = -horizontalStep;}
+     } else {
+         this.x = -HORIZONTAL_STEP;
+    }
 
 };
 
@@ -44,8 +48,8 @@ Enemy.prototype.render = function() {
 
 var Player = function(){
     /* Set Initial Player Position */
-    this.x = horizontalStep * 2 ;
-    this.y =  (verticalStep * 4) + 55 ;
+    this.x = HORIZONTAL_STEP * 2 ;
+    this.y =  (VERTICAL_STEP * 4) + 55 ;
     this.sprite = 'images/char-boy.png';    
 }
 
@@ -56,38 +60,38 @@ Player.prototype.render =  function() {
 Player.prototype.handleInput =  function(input) {
     if(input === 'left') {
         if(this.x > 0){
-            this.x -= horizontalStep;
+            this.x -= HORIZONTAL_STEP;
         }        
     }
 
     if(input === 'right'){
-        if( this.x < horizontalStep * 4 ){
-            this.x  += horizontalStep;
+        if( this.x < HORIZONTAL_STEP * 4 ){
+            this.x  += HORIZONTAL_STEP;
         }
     }
 
     if(input === 'up') {
-        if(this.y > verticalStep/2 ){
-            this.y -= verticalStep ;
+        if(this.y > VERTICAL_STEP/2 ){
+            this.y -= VERTICAL_STEP ;
         }         
     }  
   
     if(input === 'down') {
-        if(this.y < verticalStep * 4  ){
-            this.y += verticalStep ;
+        if(this.y < VERTICAL_STEP * 4  ){
+            this.y += VERTICAL_STEP ;
         }
     }
 }
 
 function collisionDetect(player,enemy){
     return player.y === enemy.y &&
-            (enemy.x +  horizontalStep/2 > player.x && enemy.x < player.x + horizontalStep/2)  ;
+            (enemy.x +  HORIZONTAL_STEP/2 > player.x && enemy.x < player.x + HORIZONTAL_STEP/2)  ;
 }
 
 Player.prototype.resetGame = function (){
     //When game is replayed - set the player to intial positions
-    this.x = horizontalStep * 2 ;
-    this.y = (verticalStep * 4) + 55 ;  
+    this.x = HORIZONTAL_STEP * 2 ;
+    this.y = (VERTICAL_STEP * 4) + 55 ; 
 }
 
 
@@ -97,15 +101,15 @@ Player.prototype.update =  function() {
     //When player gets to water , end game
     if  (this.y === -30)
     {    
-         modal.style.display = 'block'; 
-         win.cancelAnimationFrame(win.requestAnimationFrame(main));        
+         isGameWorking = false;
+         modal.style.display = 'block';                              
     } 
     
     //if bug and player collide , reset player position
     for(let enemy of allEnemies){                
         if (collisionDetect(player,enemy))
         { 
-          this.resetGame();                  
+          player.resetGame();                  
         }        
     }   
 }
@@ -117,12 +121,12 @@ Player.prototype.update =  function() {
 
 
 const player = new Player();
-const allEnemies = [];
-
 /*Enemy starts one block from  the canvas - first block contains the water i.e -101*/
-allEnemies[0] = new Enemy(-101,0,650);//velocity = number of pixels bug crosses every second
-allEnemies[1] = new Enemy(-202,85,500);
-allEnemies[2] = new Enemy(-303,170,750);
+const allEnemies = [
+    new Enemy(-101,0,650),
+    new Enemy(-202,85,500),
+    new Enemy(-303,170,750)
+];
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -139,14 +143,13 @@ document.addEventListener('keyup', function(e) {
 
 /* This function resets the game should the player choose to play again.*/
 const restartButton = document.querySelector('.button');
-restartButton.addEventListener('click', startGameAfresh);
+restartButton.addEventListener('click',startGameAfresh);
 
 function startGameAfresh() {
-    player.resetGame(); 
-    modal.style.visibility = 'hidden';    
-    window.location.reload();  
+    modal.style.visibility = 'hidden';
+    player.resetGame();  
+    isGameWorking = true;      
 }
-
 
 /*
  Class resources used to make project 
